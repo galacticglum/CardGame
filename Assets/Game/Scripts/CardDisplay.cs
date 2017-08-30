@@ -77,6 +77,11 @@ public class CardDisplay : MonoBehaviour
 
     private void OnImmediateActionPointsChanged(object o, ImmediateActionPointsChangedEventArgs args)
     {
+        if (args.NewImmediateActionPoints < 0)
+        {
+            immediatePointLabel.font = Resources.Load<TMP_FontAsset>("Fonts/Belwe-bd-bt-bold SDF Glow");
+        }
+
         immediatePointLabel.fontSharedMaterial.SetFloat(ShaderUtilities.ID_GlowPower, args.NewImmediateActionPoints <= 0 ? 0 : 1);
         immediatePointLabel.text = args.NewImmediateActionPoints.ToString();
     }

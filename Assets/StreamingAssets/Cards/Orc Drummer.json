@@ -1,7 +1,0 @@
-{
-    "name": "Orc Drummer",
-    "sprite_name": "orc_image",
-    "description": "Me orc, me drum! Stuns enemy for <b>1</b> turn.",
-    "attack_points": 0,
-    "immediate_action_points": 1
-}

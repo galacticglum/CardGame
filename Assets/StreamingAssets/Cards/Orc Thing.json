@@ -1,7 +1,0 @@
-{
-  "name": "Orc Thing",
-  "sprite_name": "orc_image",
-  "description": "<color=\"red\">ORC",
-  "attack_points": 0,
-  "immediate_action_points": 0
-}

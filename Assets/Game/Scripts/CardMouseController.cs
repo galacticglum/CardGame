@@ -28,22 +28,20 @@ public class CardMouseController : MonoBehaviour
             CardDisplay cardDisplay = hit.collider?.gameObject.GetComponent<CardDisplay>();
             if (cardDisplay != null)
             {
+                StopHover(currentHoverCardDisplay);
                 if (Input.GetMouseButtonDown(0))
                 {
-                    StopHover(currentHoverCardDisplay);
                     BeginDrag(cardDisplay);
                 }
                 else
                 {
-                    StopHover(currentHoverCardDisplay);
                     BeginHover(cardDisplay);
                 }
             }
             else
             {
                 StopHover(currentHoverCardDisplay);
-            }
-           
+            }     
         }
         else
         {
@@ -58,8 +56,6 @@ public class CardMouseController : MonoBehaviour
 
     public void BeginDrag(CardDisplay cardDisplay)
     {
-        Debug.Log("begin drag");
-
         currentDragCardDisplay = cardDisplay;
         dragCardIndex = CardController.Instance.RemoveCard(cardDisplay.gameObject);
 
@@ -70,8 +66,6 @@ public class CardMouseController : MonoBehaviour
     public void StopDrag(CardDisplay cardDisplay)
     {
         if(currentDragCardDisplay == null) return;
-
-        Debug.Log("stop drag");
 
         cardDisplay.GraphicsRootGameObject.transform.localScale = RegularScale;
         CardController.Instance.InsertCardAt(cardDisplay, dragCardIndex);

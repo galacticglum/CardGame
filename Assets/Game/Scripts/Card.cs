@@ -3,19 +3,6 @@ using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
 
-public delegate void AttackPointsChangedEventHandler(object sender, AttackPointsChangedEventArgs args);
-public class AttackPointsChangedEventArgs : EventArgs
-{
-    public int OldAttackPoints { get; }
-    public int NewAttackPoints { get; }
-
-    public AttackPointsChangedEventArgs(int oldAttackPoints, int newAttackPoints)
-    {
-        OldAttackPoints = oldAttackPoints;
-        NewAttackPoints = newAttackPoints;
-    }
-}
-
 public delegate void ImmediateActionPointsChangedEventHandler(object sender, ImmediateActionPointsChangedEventArgs args);
 public class ImmediateActionPointsChangedEventArgs : EventArgs
 {
@@ -30,37 +17,24 @@ public class ImmediateActionPointsChangedEventArgs : EventArgs
 }
 
 
-public class Card
+public class Card : Entity
 {
     public static string AssetFilePath => Path.Combine(Application.streamingAssetsPath, "Cards");
-
-    public const string NamePropertyJson = "name";
-    public const string SpriteNamePropertyJson = "sprite_name";
-    public const string DescriptionPropertyJson = "description";
     public const string AttackPointsPropertyJson = "attack_points";
     public const string ImmediateActionPointsJson = "immediate_action_points";
 
-    [JsonProperty(NamePropertyJson, Required = Required.Always)]
-    public string Name { get; set; }
-
-    [JsonProperty(SpriteNamePropertyJson, Required = Required.Always)]
-    public string SpriteName { get; set; }
-
-    [JsonProperty(DescriptionPropertyJson, DefaultValueHandling = DefaultValueHandling.Populate)]
-    public string Description { get; set; }
-
-    private int attackPointsPoints;
+    private int attackPointsP;
     [JsonProperty(AttackPointsPropertyJson, Required = Required.Always)]
     public int AttackPoints
     {
-        get { return attackPointsPoints; }
+        get { return attackPointsP; }
         set
         {
-            int old = attackPointsPoints;
-            attackPointsPoints = value;
+            int old = attackPointsP;
+            attackPointsP = value;
 
-            if (attackPointsPoints == old) return;
-            AttackPointsChanged?.Invoke(this, new AttackPointsChangedEventArgs(old, attackPointsPoints));
+            if (attackPointsP == old) return;
+            AttackPointsChanged?.Invoke(this, new AttackPointsChangedEventArgs(old, attackPointsP));
         }
     }
 
@@ -79,8 +53,7 @@ public class Card
         }
     }
 
-    [JsonIgnore]
-    public Sprite Sprite => Resources.Load<Sprite>($"Sprites/Cards/{SpriteName}");
+    public override Sprite Sprite => Resources.Load<Sprite>(Path.Combine(AssetFilePath, SpriteName));
 
     public event AttackPointsChangedEventHandler AttackPointsChanged;
     public event ImmediateActionPointsChangedEventHandler ImmediateActionPointsChanged;

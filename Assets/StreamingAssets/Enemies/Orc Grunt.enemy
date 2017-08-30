@@ -1,0 +1,7 @@
+{
+  "name": "Orc Grunt",
+  "sprite_name": "orc_grunt_image",
+  "description": "Me orc, me grunt!",
+  "attack_points": 3,
+  "health_points": 3
+}

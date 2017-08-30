@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Text;
 using Newtonsoft.Json;
-using UnityEngine;
 
 public static class CardUtility
 {
@@ -15,13 +14,13 @@ public static class CardUtility
             writer.Formatting = Formatting.Indented;
             writer.WriteStartObject();
 
-            writer.WritePropertyName(Card.NamePropertyJson);
+            writer.WritePropertyName(Entity.NamePropertyJson);
             writer.WriteValue(name);
 
-            writer.WritePropertyName(Card.SpriteNamePropertyJson);
+            writer.WritePropertyName(Entity.SpriteNamePropertyJson);
             writer.WriteValue(cardSpriteName);
 
-            writer.WritePropertyName(Card.DescriptionPropertyJson);
+            writer.WritePropertyName(Entity.DescriptionPropertyJson);
             writer.WriteValue(description);
 
             writer.WritePropertyName(Card.AttackPointsPropertyJson);
