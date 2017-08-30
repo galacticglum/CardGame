@@ -1,15 +1,11 @@
-﻿using System.Collections;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 public class CardDisplay : MonoBehaviour
 {
-    private static string draggingCardName;
+    public GameObject GraphicsRootGameObject { get; private set; }
 
     private const string ResourcePath = "Prefabs/CardTemplate";
-    private const float PopInDuration = 0.25f;
-    private const float ZoomMultiplier = 2f;
-    private static readonly Vector3 RegularScale = new Vector3(1.25f, 1.25f, 1);
 
     [Header("Components")]
     [SerializeField]
@@ -26,95 +22,20 @@ public class CardDisplay : MonoBehaviour
     private TextMeshPro attackPointLabel;
     [SerializeField]
     private TextMeshPro immediatePointLabel;
-
-    private GameObject graphicsRootGameObject;
     private Card card;
-
-    private LerpInformation<Vector3> popinMovementInformation;
-    private Quaternion originalRotation;
-    private Vector3 originalPosition;
-
-    private bool isDragging;
-    private int index;
 
     private void Start()
     {
-        graphicsRootGameObject = transform.Find("Graphics").gameObject;
-        
+        GraphicsRootGameObject = transform.Find("Graphics").gameObject;
+
+        image.sprite = card.Sprite;
+        nameLabel.text = card.Name;
+        descriptionLabel.text = card.Description;
+        attackPointLabel.text = card.AttackPoints.ToString();
+
         card.AttackPointsChanged += (sender, args) => attackPointLabel.text = card.AttackPoints.ToString();
         card.ImmediateActionPointsChanged += OnImmediateActionPointsChanged;
-    }
-
-    private void OnMouseDown()
-    {
-        if (!string.IsNullOrEmpty(draggingCardName)) return;
-
-        index = CardController.Instance.RemoveCard(gameObject);
-
-        transform.rotation = Quaternion.identity;
-        graphicsRootGameObject.transform.position = originalPosition;
-        graphicsRootGameObject.transform.rotation = Quaternion.identity;
-        graphicsRootGameObject.transform.localScale = RegularScale;
-
-        SetupSortingLayers(CardController.Instance.Count + 1);
-        isDragging = true;
-        draggingCardName = card.Name;
-    }
-
-    private void OnMouseEnter()
-    {
-        if (!string.IsNullOrEmpty(draggingCardName)) return;
-
-        originalRotation = transform.rotation;
-        originalPosition = graphicsRootGameObject.transform.position;
-
-        graphicsRootGameObject.transform.rotation = Quaternion.identity;
-        graphicsRootGameObject.transform.position = transform.position + new Vector3(0, 1.5f, 0);
-
-        SetupSortingLayers(CardController.Instance.Count + 1);
-        graphicsRootGameObject.transform.localScale = RegularScale * ZoomMultiplier;
-    }
-
-    private void OnMouseExit()
-    {
-        if (!string.IsNullOrEmpty(draggingCardName)) return;
-
-        CardController.Instance.UpdateSortOrders();
-
-        graphicsRootGameObject.transform.position = originalPosition;// + new Vector3(0, 0.25f, 0);
-        graphicsRootGameObject.transform.rotation = originalRotation;
-        graphicsRootGameObject.transform.localScale = RegularScale;
-    }
-
-    private void OnMouseUp()
-    {
-        if (draggingCardName != card.Name) return;
-
-        isDragging = false;
-        draggingCardName = string.Empty;
-
-        graphicsRootGameObject.transform.localScale = RegularScale;
-        CardController.Instance.InsertCardAt(this, index);
-    }
-
-    private void Update()
-    {
-        if (isDragging)
-        {
-            transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + new Vector3(0, 0, Camera.main.orthographicSize * 2f);
-        }
-    }
-
-    private void HandlePopIn()
-    {
-        if (popinMovementInformation == null || popinMovementInformation.TimeLeft <= 0) return;
-        graphicsRootGameObject.transform.position = popinMovementInformation.Step(Time.deltaTime);
-    }
-
-    private IEnumerator PopIn()
-    {
-        yield return new WaitForSeconds(0.1f);
-        popinMovementInformation = new LerpInformation<Vector3>(graphicsRootGameObject.transform.position, originalPosition, PopInDuration, Vector3.Lerp);
+        OnImmediateActionPointsChanged(this, new ImmediateActionPointsChangedEventArgs(card.ImmediateActionPoints, card.ImmediateActionPoints));
     }
 
     public void SetupSortingLayers(int offset = 0)
@@ -150,13 +71,6 @@ public class CardDisplay : MonoBehaviour
 
         cardDisplay.SetupSortingLayers();
         cardDisplay.card = card;
-
-        cardDisplay.image.sprite = card.Sprite;
-        cardDisplay.nameLabel.text = card.Name;
-        cardDisplay.descriptionLabel.text = card.Description;
-        cardDisplay.attackPointLabel.text = card.AttackPoints.ToString();
-        cardDisplay.immediatePointLabel.text = card.ImmediateActionPoints.ToString();
-        cardDisplay.immediatePointLabel.fontSharedMaterial.SetFloat(ShaderUtilities.ID_GlowPower, card.ImmediateActionPoints <= 0 ? 0 : 1);
 
         return cardGameObject;
     }
