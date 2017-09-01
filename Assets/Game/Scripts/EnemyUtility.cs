@@ -14,13 +14,13 @@ public static class EnemyUtility
             writer.Formatting = Formatting.Indented;
             writer.WriteStartObject();
 
-            writer.WritePropertyName(Entity.NamePropertyJson);
+            writer.WritePropertyName(Enemy.NamePropertyJson);
             writer.WriteValue(name);
 
-            writer.WritePropertyName(Entity.SpriteNamePropertyJson);
+            writer.WritePropertyName(Enemy.SpriteNamePropertyJson);
             writer.WriteValue(spriteName);
 
-            writer.WritePropertyName(Entity.DescriptionPropertyJson);
+            writer.WritePropertyName(Enemy.DescriptionPropertyJson);
             writer.WriteValue(description);
 
             writer.WritePropertyName(Enemy.AttackPointsPropertyJson);

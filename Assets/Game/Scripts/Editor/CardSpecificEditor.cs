@@ -5,10 +5,9 @@ public class CardSpecificEditor : IEntityEditor
 {
     public string EntityName => card?.Name;
 
-    private readonly ResourceAssetPickerControl<Object> spritePickerControl;
+    private readonly ResourceAssetPickerControl<Sprite> spritePickerControl;
     private Card card;
     private Vector2 descriptionScrollPosition;
-    private Sprite sprite;
 
     private readonly EditorWindow window;
 
@@ -16,7 +15,7 @@ public class CardSpecificEditor : IEntityEditor
     {
         this.window = window;
 
-        spritePickerControl = new ResourceAssetPickerControl<Object>(window, "Sprite");
+        spritePickerControl = new ResourceAssetPickerControl<Sprite>(window, "Sprite");
         ClearValues();
     }
 

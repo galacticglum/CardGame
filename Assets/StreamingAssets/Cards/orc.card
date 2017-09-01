@@ -1,11 +1,11 @@
 {
-  "attack_points": 10,
-  "health_cost": 2,
+  "attack_points": 0,
+  "health_cost": 0,
   "is_immediate": false,
   "background_colour": {
-    "html_colour": "005404FF"
+    "html_colour": "DA0000FF"
   },
   "name": "Orc",
   "sprite_name": "",
-  "description": "Orc thingy"
+  "description": ""
 }

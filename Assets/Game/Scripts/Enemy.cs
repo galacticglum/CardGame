@@ -2,11 +2,23 @@
 using Newtonsoft.Json;
 using UnityEngine;
 
-public class Enemy : Entity
+public class Enemy 
 {
+    public const string NamePropertyJson = "name";
+    public const string SpriteNamePropertyJson = "sprite_name";
+    public const string DescriptionPropertyJson = "description";
     public static string AssetFilePath => Path.Combine(Application.streamingAssetsPath, "Enemies");
     public const string AttackPointsPropertyJson = "attack_points";
     public const string HealthPointsJson = "health_points";
+
+    [JsonProperty(NamePropertyJson, Required = Required.Always)]
+    public string Name { get; set; }
+
+    [JsonProperty(SpriteNamePropertyJson, Required = Required.Always)]
+    public string SpriteName { get; set; }
+
+    [JsonProperty(DescriptionPropertyJson, DefaultValueHandling = DefaultValueHandling.Populate)]
+    public string Description { get; set; }
 
     private int attackPoints;
     [JsonProperty(AttackPointsPropertyJson, Required = Required.Always)]
@@ -38,7 +50,8 @@ public class Enemy : Entity
         }
     }
 
-    public override Sprite Sprite => Resources.Load<Sprite>(Path.Combine(AssetFilePath, SpriteName));
+    [JsonIgnore]
+    public Sprite Sprite => Resources.Load<Sprite>(Path.Combine(AssetFilePath, SpriteName));
 
     public event AttackPointsChangedEventHandler AttackPointsChanged;
     public event HealthPointsChangedEventHandler HealthPointsChanged;
