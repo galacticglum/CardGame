@@ -4,7 +4,7 @@ using UnityEngine;
 public class CardDisplay : MonoBehaviour
 {
     public GameObject GraphicsRootGameObject { get; private set; }
-    private const string ResourcePath = "Prefabs/CardTemplate_New";
+    private const string ResourcePath = "Prefabs/Card_Template";
 
     [Header("Components")]
     [SerializeField]

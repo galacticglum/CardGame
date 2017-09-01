@@ -57,6 +57,8 @@ public class CardInteractionController : MonoBehaviour
     public void BeginDrag(CardDisplay cardDisplay)
     {
         currentDragCardDisplay = cardDisplay;
+        cardDisplay.SetupOrdering(CardController.Instance.Count + 1);
+
         dragCardIndex = CardController.Instance.RemoveCard(cardDisplay.gameObject);
         cardDisplay.transform.rotation = Quaternion.identity;
     }
