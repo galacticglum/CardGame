@@ -22,8 +22,8 @@ public class CardManager : IEnumerable<Card>
         FileInfo[] files = new DirectoryInfo(Card.AssetFilePath).GetFiles("*.card", SearchOption.TopDirectoryOnly);
         foreach (FileInfo file in files)
         {
-            string json = File.ReadAllText(file.FullName);
-            Card card = JsonConvert.DeserializeObject<Card>(json, new ColorJsonConverter());
+            Card card;
+             ContentUtility.LoadFromFile(file.FullName, out card);
             cards.Add(card.Name, card);
         }
     }

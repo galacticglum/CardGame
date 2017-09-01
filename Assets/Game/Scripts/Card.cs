@@ -3,6 +3,32 @@ using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
 
+public delegate void AttackPointsChangedEventHandler(object sender, AttackPointsChangedEventArgs args);
+public class AttackPointsChangedEventArgs : EventArgs
+{
+    public int OldAttackPoints { get; }
+    public int NewAttackPoints { get; }
+
+    public AttackPointsChangedEventArgs(int oldAttackPoints, int newAttackPoints)
+    {
+        OldAttackPoints = oldAttackPoints;
+        NewAttackPoints = newAttackPoints;
+    }
+}
+
+public delegate void HealthPointsChangedEventHandler(object sender, HealthPointsChangedEventArgs args);
+public class HealthPointsChangedEventArgs : EventArgs
+{
+    public int OldHealthPoints { get; }
+    public int NewHealthPoints { get; }
+
+    public HealthPointsChangedEventArgs(int oldHealthPoints, int newHealthPoints)
+    {
+        OldHealthPoints = oldHealthPoints;
+        NewHealthPoints = newHealthPoints;
+    }
+}
+
 public delegate void HealthCostChangedEventHandler(object sender, HealthCostChangedEventArgs args);
 public class HealthCostChangedEventArgs : EventArgs
 {
@@ -16,7 +42,7 @@ public class HealthCostChangedEventArgs : EventArgs
     }
 }
 
-public class Card
+public class Card : IContent<Card>
 {
     public static string AssetFilePath => Path.Combine(Application.streamingAssetsPath, "Cards");
 
@@ -94,5 +120,15 @@ public class Card
     public override string ToString()
     {
         return $"{Name}: AP {AttackPoints}, HC {HealthCost}, Immediate {IsImmediate}";
+    }
+
+    public string Save()
+    {
+        return JsonConvert.SerializeObject(this, Formatting.Indented, new ColorJsonConverter());
+    }
+
+    public Card Load(string json)
+    {
+        return JsonConvert.DeserializeObject<Card>(json, new ColorJsonConverter());
     }
 }

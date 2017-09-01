@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-public class CardMouseController : MonoBehaviour
+public class CardInteractionController : MonoBehaviour
 {
-    public static CardMouseController Instance { get; private set; }
+    public static CardInteractionController Instance { get; private set; }
 
     private const float TargetZoomScale = 1f;
     private Vector3 regularScale;

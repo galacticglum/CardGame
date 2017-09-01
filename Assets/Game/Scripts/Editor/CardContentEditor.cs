@@ -42,11 +42,11 @@ public class CardContentEditor : IContentEditor
     {
         card = new Card();
         spritePickerControl.ClearValue();
-    }
+    }    
 
     public void Save(string filePath)
     {
-        CardUtility.SaveToFile(filePath, card);
+        ContentUtility.SaveToFile(filePath, card);
     }
 
     public string Load(string filePath)
@@ -58,7 +58,7 @@ public class CardContentEditor : IContentEditor
             filePath = EditorUtility.OpenFilePanel("Open card asset file", Card.AssetFilePath, "card");
         }
 
-        CardUtility.LoadFromFile(filePath, out card);
+        ContentUtility.LoadFromFile(filePath, out card);
         spritePickerControl.SetValue(card.SpritePath);
 
         return filePath;

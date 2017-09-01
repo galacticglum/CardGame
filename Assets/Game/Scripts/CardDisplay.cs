@@ -4,7 +4,6 @@ using UnityEngine;
 public class CardDisplay : MonoBehaviour
 {
     public GameObject GraphicsRootGameObject { get; private set; }
-
     private const string ResourcePath = "Prefabs/CardTemplate_New";
 
     [Header("Components")]
