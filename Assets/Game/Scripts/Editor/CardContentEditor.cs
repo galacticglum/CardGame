@@ -23,11 +23,9 @@ public class CardContentEditor : IContentEditor
     {
         if (card == null) return;
         card.Name = EditorGUILayout.TextField("Name", card.Name).Trim();
-
-        spritePickerControl.OnGUI();
+        card.SpritePath = spritePickerControl.OnGUI().FilePath;
 
         EditorGUILayout.Space();
-        card.SpriteName = EditorGUILayout.TextField("Sprite Name", card.SpriteName);
         card.BackgroundColour = EditorGUILayout.ColorField("Background Colour", card.BackgroundColour);
 
         EditorGUILayout.LabelField("Description");
@@ -61,6 +59,8 @@ public class CardContentEditor : IContentEditor
         }
 
         CardUtility.LoadFromFile(filePath, out card);
+        spritePickerControl.SetValue(card.SpritePath);
+
         return filePath;
     }
 }

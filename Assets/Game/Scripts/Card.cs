@@ -18,22 +18,22 @@ public class HealthCostChangedEventArgs : EventArgs
 
 public class Card
 {
+    public static string AssetFilePath => Path.Combine(Application.streamingAssetsPath, "Cards");
+
     public const string NamePropertyJson = "name";
-    public const string SpriteNamePropertyJson = "sprite_name";
+    public const string SpritePathPropertyJson = "sprite_path";
     public const string DescriptionPropertyJson = "description";
-    public const string SpriteAssetPath = "Sprites/Cards";
+    public const string SpriteContentAssetPath = "Sprites/Cards";
     public const string AttackPointsPropertyJson = "attack_points";
     public const string HealthCostPropertyJson = "health_cost";
     public const string IsImmediatePropertyJson = "is_immediate";
     public const string BackgroundColourPropertyJson = "background_colour";
 
-    public static string AssetFilePath => Path.Combine(Application.streamingAssetsPath, "Cards");
-
     [JsonProperty(NamePropertyJson, Required = Required.Always)]
     public string Name { get; set; }
 
-    [JsonProperty(SpriteNamePropertyJson, Required = Required.Always)]
-    public string SpriteName { get; set; }
+    [JsonProperty(SpritePathPropertyJson, Required = Required.Always)]
+    public string SpritePath { get; set; }
 
     [JsonProperty(DescriptionPropertyJson, DefaultValueHandling = DefaultValueHandling.Populate)]
     public string Description { get; set; }
@@ -75,7 +75,7 @@ public class Card
     public Color BackgroundColour { get; set; }
 
     [JsonIgnore]
-    public Sprite Sprite => Resources.Load<Sprite>(Path.Combine(SpriteAssetPath, SpriteName));
+    public Sprite Sprite => Resources.Load<Sprite>(SpritePath);
 
     public event AttackPointsChangedEventHandler AttackPointsChanged;
     public event HealthCostChangedEventHandler HealthCostChanged;
@@ -86,7 +86,7 @@ public class Card
         HealthCost = 0;
         IsImmediate = false;
         BackgroundColour = Color.white;
-        SpriteName = string.Empty;
+        SpritePath = string.Empty;
         Name = string.Empty;
         Description = string.Empty;
     }

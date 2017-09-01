@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.IO;
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -130,5 +131,12 @@ public class ResourceAssetPickerControl<T> where T : Object
     public void ClearValue()
     {
         asset.Object = null;
+    }
+
+    public void SetValue(string path)
+    {
+        T obj = Resources.Load<T>(path);
+        if (obj == null) return;
+        asset.Object = obj;
     }
 }

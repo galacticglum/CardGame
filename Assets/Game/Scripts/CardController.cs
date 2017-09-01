@@ -42,7 +42,7 @@ public class CardController : MonoBehaviour
     {
         int index = cardGameObjects.IndexOf(cardGameObject);
         cardGameObjects.Remove(cardGameObject);
-        UpdateCardPositions();
+        UpdateCardPositions();     
 
         return index;
     }

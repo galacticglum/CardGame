@@ -58,9 +58,7 @@ public class CardMouseController : MonoBehaviour
     {
         currentDragCardDisplay = cardDisplay;
         dragCardIndex = CardController.Instance.RemoveCard(cardDisplay.gameObject);
-
         cardDisplay.transform.rotation = Quaternion.identity;
-        cardDisplay.SetupOrdering(CardController.Instance.Count + 1);
     }
 
     public void StopDrag(CardDisplay cardDisplay)

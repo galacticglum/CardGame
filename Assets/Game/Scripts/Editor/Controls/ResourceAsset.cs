@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
@@ -28,8 +29,9 @@ public struct ResourceAsset<T> where T : Object
 
         string objectPath = AssetDatabase.GetAssetPath(obj);
         int start = objectPath.IndexOf("Resources/", StringComparison.Ordinal) + "Resources/".Length;
-        string pathWithinResources = objectPath.Substring(start);
+        string path = objectPath.Substring(start);
 
-        filePath = pathWithinResources;
+        path = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path));
+        filePath = path;
     }
 }
