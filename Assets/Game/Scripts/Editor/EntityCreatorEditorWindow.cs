@@ -49,7 +49,7 @@ public class EntityCreatorEditorWindow : EditorWindow
     private void OnEnable()
     {
         enemySpecificEditor = new EnemySpecificEditor();
-        cardSpecificEditor = new CardSpecificEditor();
+        cardSpecificEditor = new CardSpecificEditor(this);
     }
 
     private void OnGUI()
@@ -67,6 +67,7 @@ public class EntityCreatorEditorWindow : EditorWindow
             toolsMenu.AddItem(new GUIContent("Enemy"), false, () => LoadEnemy());
             toolsMenu.DropDown(openButtonRect);
 
+            EditorGUIExtensions.RemoveFocus();
             GUIUtility.ExitGUI();
         }
 
@@ -74,7 +75,7 @@ public class EntityCreatorEditorWindow : EditorWindow
         {
             GUI.enabled = false;
         }
-
+        
         GUI.SetNextControlName("SaveButton");
         if (GUILayout.Button("Save", EditorStyles.miniButton, GUILayout.Width(50)))
         {
@@ -94,6 +95,7 @@ public class EntityCreatorEditorWindow : EditorWindow
                 loadedFilePath = filePath;
             }
 
+            EditorGUIExtensions.RemoveFocus();
             activeEditor?.Save(filePath);
         }
 
@@ -108,6 +110,7 @@ public class EntityCreatorEditorWindow : EditorWindow
             toolsMenu.AddItem(new GUIContent("Enemy"), false, NewEnemy);
             toolsMenu.DropDown(newButtonRect);
 
+            EditorGUIExtensions.RemoveFocus();
             GUIUtility.ExitGUI();
         }
 
@@ -118,6 +121,7 @@ public class EntityCreatorEditorWindow : EditorWindow
 
         if (GUILayout.Button(new GUIContent("Close"), EditorStyles.miniButton, GUILayout.Width(50)))
         {
+            EditorGUIExtensions.RemoveFocus();
             ClearValues(false);
         }
 

@@ -59,7 +59,7 @@ public class CardController : MonoBehaviour
 
         for (int i = 0; i < cardGameObjects.Count; i++)
         {
-            cardGameObjects[i].GetComponent<CardDisplay>().SetupSortingLayers(i + 1);
+            cardGameObjects[i].GetComponent<CardDisplay>().SetupOrdering(i + 1);
 
             float zRotation = -(turnOffset + i * rotationPerCard - rotationOffset);
 
@@ -72,7 +72,7 @@ public class CardController : MonoBehaviour
     {
         for (int i = 0; i < cardGameObjects.Count; i++)
         {
-            cardGameObjects[i].GetComponent<CardDisplay>().SetupSortingLayers(i + 1);
+            cardGameObjects[i].GetComponent<CardDisplay>().SetupOrdering(i + 1);
         }
     }
 }

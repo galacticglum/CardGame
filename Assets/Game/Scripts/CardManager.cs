@@ -19,15 +19,14 @@ public class CardManager : IEnumerable<Card>
 
     private void Load()
     {
-        FileInfo[] files = new DirectoryInfo(Card.AssetFilePath).GetFiles("*.json", SearchOption.TopDirectoryOnly);
+        FileInfo[] files = new DirectoryInfo(Card.AssetFilePath).GetFiles("*.card", SearchOption.TopDirectoryOnly);
         foreach (FileInfo file in files)
         {
             string json = File.ReadAllText(file.FullName);
-            Card card = JsonConvert.DeserializeObject<Card>(json);
+            Card card = JsonConvert.DeserializeObject<Card>(json, new ColorJsonConverter());
             cards.Add(card.Name, card);
         }
     }
-
 
     public IEnumerator<Card> GetEnumerator()
     {

@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 0173895b5af4425448d27d5007ba9d27
+timeCreated: 1504187988
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Bebas Kai
+  fontNames:
+  - Bebas Kai
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -4,8 +4,8 @@ public class CardMouseController : MonoBehaviour
 {
     public static CardMouseController Instance { get; private set; }
 
-    private const float ZoomMultiplier = 2f;
-    private static readonly Vector3 RegularScale = new Vector3(1.25f, 1.25f, 1);
+    private const float TargetZoomScale = 1f;
+    private Vector3 regularScale;
 
     private Quaternion originalRotation;
     private Vector3 originalPosition;
@@ -60,14 +60,14 @@ public class CardMouseController : MonoBehaviour
         dragCardIndex = CardController.Instance.RemoveCard(cardDisplay.gameObject);
 
         cardDisplay.transform.rotation = Quaternion.identity;
-        cardDisplay.SetupSortingLayers(CardController.Instance.Count + 1);
+        cardDisplay.SetupOrdering(CardController.Instance.Count + 1);
     }
 
     public void StopDrag(CardDisplay cardDisplay)
     {
         if(currentDragCardDisplay == null) return;
 
-        cardDisplay.GraphicsRootGameObject.transform.localScale = RegularScale;
+        cardDisplay.GraphicsRootGameObject.transform.localScale = regularScale;
         CardController.Instance.InsertCardAt(cardDisplay, dragCardIndex);
 
         currentDragCardDisplay = null;
@@ -75,16 +75,21 @@ public class CardMouseController : MonoBehaviour
 
     private void BeginHover(CardDisplay cardDisplay)
     {
-        if (currentHoverCardDisplay != null || currentDragCardDisplay != null) return;
+        if (cardDisplay == null || currentHoverCardDisplay != null || currentDragCardDisplay != null) return;
 
-        originalRotation = cardDisplay.GraphicsRootGameObject.transform.rotation;
+        regularScale = cardDisplay.GraphicsRootGameObject.transform.localScale;
+
+        float zoomMultiplierX = TargetZoomScale / regularScale.x;
+        float zoomMultiplierY = TargetZoomScale / regularScale.y;
+
+        originalRotation = cardDisplay.GraphicsRootGameObject.transform.rotation; 
         originalPosition = cardDisplay.GraphicsRootGameObject.transform.position;
 
         cardDisplay.GraphicsRootGameObject.transform.rotation = Quaternion.identity;
         cardDisplay.GraphicsRootGameObject.transform.position = cardDisplay.transform.position + new Vector3(0, 1.5f, 0);
 
-        cardDisplay.SetupSortingLayers(CardController.Instance.Count + 1);
-        cardDisplay.GraphicsRootGameObject.transform.localScale = RegularScale * ZoomMultiplier;
+        cardDisplay.SetupOrdering(CardController.Instance.Count + 1);
+        cardDisplay.GraphicsRootGameObject.transform.localScale = new Vector3(zoomMultiplierX * regularScale.x, zoomMultiplierY * regularScale.y, 1);
 
         currentHoverCardDisplay = cardDisplay;
     }
@@ -97,7 +102,7 @@ public class CardMouseController : MonoBehaviour
 
         cardDisplay.GraphicsRootGameObject.transform.position = originalPosition;
         cardDisplay.GraphicsRootGameObject.transform.rotation = originalRotation;
-        cardDisplay.GraphicsRootGameObject.transform.localScale = RegularScale;
+        cardDisplay.GraphicsRootGameObject.transform.localScale = regularScale;
 
         currentHoverCardDisplay = null;
     }

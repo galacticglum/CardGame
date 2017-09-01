@@ -17,14 +17,14 @@ namespace TMPro.Examples
         private Transform m_floatingText_Transform;
         private Transform m_cameraTransform;
 
-        Vector3 lastPOS = Vector3.zero;
-        Quaternion lastRotation = Quaternion.identity;
+        private Vector3 lastPOS = Vector3.zero;
+        private Quaternion lastRotation = Quaternion.identity;
 
         public int SpawnType;
 
         //private int m_frame = 0;
 
-        void Awake()
+        private void Awake()
         {
             m_transform = transform;
             m_floatingText = new GameObject(name + " floating text");
@@ -36,7 +36,7 @@ namespace TMPro.Examples
             m_cameraTransform = Camera.main.transform;
         }
 
-        void Start()
+        private void Start()
         {
             if (SpawnType == 0)
             {

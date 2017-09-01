@@ -1,7 +1,11 @@
 {
-  "name": "orc",
-  "sprite_name": "orc",
-  "description": "",
-  "attack_points": 0,
-  "immediate_action_points": 0
+  "attack_points": 10,
+  "health_cost": 2,
+  "is_immediate": false,
+  "background_colour": {
+    "html_colour": "005404FF"
+  },
+  "name": "Orc",
+  "sprite_name": "",
+  "description": "Orc thingy"
 }

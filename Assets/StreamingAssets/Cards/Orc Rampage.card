@@ -1,7 +1,0 @@
-{
-  "name": "Orc Rampage",
-  "sprite_name": "orc_image",
-  "description": "Me orc, me rampage!",
-  "attack_points": 2,
-  "immediate_action_points": 0
-}

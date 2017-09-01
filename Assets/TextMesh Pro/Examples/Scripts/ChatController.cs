@@ -12,20 +12,20 @@ public class ChatController : MonoBehaviour {
 
     public Scrollbar ChatScrollbar;
 
-    void OnEnable()
+    private void OnEnable()
     {
         TMP_ChatInput.onSubmit.AddListener(AddToChatOutput);
 
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         TMP_ChatInput.onSubmit.RemoveListener(AddToChatOutput);
 
     }
 
 
-    void AddToChatOutput(string newText)
+    private void AddToChatOutput(string newText)
     {
         // Clear Input Field
         TMP_ChatInput.text = string.Empty;

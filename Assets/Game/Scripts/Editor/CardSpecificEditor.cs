@@ -3,56 +3,54 @@ using UnityEngine;
 
 public class CardSpecificEditor : IEntityEditor
 {
-    public string EntityName => entityName;
+    public string EntityName => card?.Name;
 
-    private string entityName;
-    private string cardSpriteName;
-    private string description;
-    private int attackPoints;
-    private int immediateActionPoints;
-
+    private readonly ResourceAssetPickerControl<Object> spritePickerControl;
+    private Card card;
     private Vector2 descriptionScrollPosition;
-    private string previousEntityName;
+    private Sprite sprite;
 
-    public CardSpecificEditor()
+    private readonly EditorWindow window;
+
+    public CardSpecificEditor(EditorWindow window)
     {
+        this.window = window;
+
+        spritePickerControl = new ResourceAssetPickerControl<Object>(window, "Sprite");
         ClearValues();
     }
 
     public void Draw()
     {
-        GUI.SetNextControlName("NameTextFieldCard");
-        previousEntityName = entityName;
-        entityName = EditorGUILayout.TextField("Name", entityName).Trim();
+        if (card == null) return;
+        card.Name = EditorGUILayout.TextField("Name", card.Name).Trim();
 
-        if (GUI.GetNameOfFocusedControl() == "NameTextField" && previousEntityName != entityName)
-        {
-            cardSpriteName = entityName;
-        }
+        spritePickerControl.OnGUI();
+        sprite = (Sprite)EditorGUILayout.ObjectField(new GUIContent("test"), sprite, typeof(Sprite), true);
 
-        cardSpriteName = EditorGUILayout.TextField("Sprite Name", cardSpriteName);
+        EditorGUILayout.Space();
+        card.SpriteName = EditorGUILayout.TextField("Sprite Name", card.SpriteName);
+        card.BackgroundColour = EditorGUILayout.ColorField("Background Colour", card.BackgroundColour);
 
         EditorGUILayout.LabelField("Description");
         descriptionScrollPosition = EditorGUILayout.BeginScrollView(descriptionScrollPosition, GUILayout.Height(75));
-        description = EditorGUILayout.TextArea(description, GUILayout.ExpandHeight(true)).Trim();
+        card.Description = EditorGUILayout.TextArea(card.Description, GUILayout.ExpandHeight(true)).Trim();
         EditorGUILayout.EndScrollView();
 
-        attackPoints = EditorGUILayout.IntField("Attack Points", attackPoints);
-        immediateActionPoints = EditorGUILayout.IntField("Immediate Action Points", immediateActionPoints);
+        card.AttackPoints = EditorGUILayout.IntField("Attack Points", card.AttackPoints);
+        card.HealthCost = EditorGUILayout.IntField("Health Cost", card.HealthCost);
+        card.IsImmediate = EditorGUILayout.Toggle("Is Immediate", card.IsImmediate);
     }
 
     public void ClearValues()
     {
-        entityName = string.Empty;
-        cardSpriteName = string.Empty;
-        description = string.Empty;
-        attackPoints = 0;
-        immediateActionPoints = 0;
+        card = new Card();
+        spritePickerControl.ClearValue();
     }
 
     public void Save(string filePath)
     {
-        CardUtility.SaveToFile(filePath, entityName, cardSpriteName, description, attackPoints, immediateActionPoints);
+        CardUtility.SaveToFile(filePath, card);
     }
 
     public string Load(string filePath)
@@ -64,7 +62,7 @@ public class CardSpecificEditor : IEntityEditor
             filePath = EditorUtility.OpenFilePanel("Open card asset file", Card.AssetFilePath, "card");
         }
 
-        CardUtility.LoadFromFile(filePath, out entityName, out cardSpriteName, out description, out attackPoints, out immediateActionPoints);
+        CardUtility.LoadFromFile(filePath, out card);
         return filePath;
     }
 }

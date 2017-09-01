@@ -25,7 +25,7 @@ namespace TMPro.Examples
 // Since this script is used for visual debugging, we exclude most of it in builds.
 #if UNITY_EDITOR
 
-        void OnEnable()
+        private void OnEnable()
         {
             m_TextComponent = gameObject.GetComponent<TMP_Text>();
 
@@ -34,7 +34,7 @@ namespace TMPro.Examples
         }
 
 
-        void OnDrawGizmos()
+        private void OnDrawGizmos()
         {
             // Update Text Statistics
             TMP_TextInfo textInfo = m_TextComponent.textInfo;
@@ -89,7 +89,7 @@ namespace TMPro.Examples
         /// Method to draw a rectangle around each character.
         /// </summary>
         /// <param name="text"></param>
-        void DrawCharactersBounds()
+        private void DrawCharactersBounds()
         {
             TMP_TextInfo textInfo = m_TextComponent.textInfo;
 
@@ -156,7 +156,7 @@ namespace TMPro.Examples
         /// Method to draw rectangles around each word of the text.
         /// </summary>
         /// <param name="text"></param>
-        void DrawWordBounds()
+        private void DrawWordBounds()
         {
             TMP_TextInfo textInfo = m_TextComponent.textInfo;
 
@@ -262,7 +262,7 @@ namespace TMPro.Examples
         /// Draw rectangle around each of the links contained in the text.
         /// </summary>
         /// <param name="text"></param>
-        void DrawLinkBounds()
+        private void DrawLinkBounds()
         {
             TMP_TextInfo textInfo = m_TextComponent.textInfo;
 
@@ -366,7 +366,7 @@ namespace TMPro.Examples
         /// Draw Rectangles around each lines of the text.
         /// </summary>
         /// <param name="text"></param>
-        void DrawLineBounds()
+        private void DrawLineBounds()
         {
             TMP_TextInfo textInfo = m_TextComponent.textInfo;
 
@@ -436,7 +436,7 @@ namespace TMPro.Examples
         /// <summary>
         /// Draw Rectangle around the bounds of the text object.
         /// </summary>
-        void DrawBounds()
+        private void DrawBounds()
         {
             Bounds meshBounds = m_TextComponent.bounds;
             
@@ -448,7 +448,7 @@ namespace TMPro.Examples
         }
 
 
-        void DrawTextBounds()
+        private void DrawTextBounds()
         {
             Bounds textBounds = m_TextComponent.textBounds;
 
@@ -460,7 +460,7 @@ namespace TMPro.Examples
 
 
         // Draw Rectangles
-        void DrawRectangle(Vector3 BL, Vector3 TR, Color color)
+        private void DrawRectangle(Vector3 BL, Vector3 TR, Color color)
         {
             Gizmos.color = color;
 
@@ -472,7 +472,7 @@ namespace TMPro.Examples
 
 
         // Draw Rectangles
-        void DrawRectangle(Vector3 bl, Vector3 tl, Vector3 tr, Vector3 br, Color color)
+        private void DrawRectangle(Vector3 bl, Vector3 tl, Vector3 tr, Vector3 br, Color color)
         {
             Gizmos.color = color;
 
@@ -484,7 +484,7 @@ namespace TMPro.Examples
 
 
         // Draw Rectangles
-        void DrawDottedRectangle(Vector3 bl, Vector3 tl, Vector3 tr, Vector3 br, Color color)
+        private void DrawDottedRectangle(Vector3 bl, Vector3 tl, Vector3 tr, Vector3 br, Color color)
         {
             var cam = Camera.current;
             float dotSpacing = (cam.WorldToScreenPoint(br).x - cam.WorldToScreenPoint(bl).x) / 75f;
