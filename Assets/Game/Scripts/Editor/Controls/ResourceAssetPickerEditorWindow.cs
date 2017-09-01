@@ -17,8 +17,11 @@ public class ObjectEventArgs : EventArgs
 
 public class ResourceAssetPickerEditorWindow : EditorWindow
 {
-    private const int NullObjectId = -100;
-    private const int NothingSelectedId = -1;
+    private enum ScrollDirection
+    {
+        Up,
+        Down
+    }
 
     public event ResourceAssetPickedEventHandler AssetPicked;
     private void OnAssetPicked(Object obj) => AssetPicked?.Invoke(this, new ObjectEventArgs(obj));
@@ -29,17 +32,23 @@ public class ResourceAssetPickerEditorWindow : EditorWindow
     private GUIStyle selectedLabelGuiStyle;
     private Vector2 scrollPosition;
 
-    private Dictionary<int, Object> objects;
+    private List<Object> objects;
 
     private int selectedIndex;
-    private int selectedObjectId;
 
     private string searchString;
     private double lastDoubleClickTime;
     private double clicks;
 
+    private float availableHeight;
+    private float searchBarHeight;
+    private int renderedObjectsCount;
+    private int heightOffset;
 
-    private bool HasValidSelection => selectedObjectId != NullObjectId && selectedObjectId != NothingSelectedId;
+    private string lastSearchString;
+    private int selectionRange;
+
+    private bool HasValidSelection => selectedIndex > 0 && selectedIndex < objects.Count;
     private GUIStyle previewBackgroundGuiStyle;
 
     private void OnEnable()
@@ -70,7 +79,10 @@ public class ResourceAssetPickerEditorWindow : EditorWindow
     private void OnGUI()
     {
         EditorGUILayout.BeginHorizontal(GUI.skin.FindStyle("Toolbar"));
-        searchString = EditorGUILayout.TextField(searchString, GUI.skin.FindStyle("ToolbarSeachTextField"));
+        lastSearchString = searchString;
+        searchString = EditorGUILayout.TextField(searchString, GUI.skin.FindStyle("ToolbarSeachTextField"))?.ToLower();
+        
+        searchBarHeight = GUILayoutUtility.GetLastRect().height;
         if (GUILayout.Button("", GUI.skin.FindStyle("ToolbarSeachCancelButton")))
         {
             // Remove focus if cleared
@@ -83,11 +95,74 @@ public class ResourceAssetPickerEditorWindow : EditorWindow
 
         RenderObjects();
         RenderObjectInformation();
+
+        HandleKeyInput();
     }
 
-    private void Update()
+    private void HandleKeyInput()
     {
-        
+        if (Event.current == null || !Event.current.isKey) return;
+
+        switch (Event.current.type)
+        {
+            case EventType.keyDown:
+                GUI.FocusControl($"Button{selectedIndex}");
+                switch (Event.current.keyCode)
+                {
+                    case KeyCode.UpArrow:
+                        if (selectedIndex <= 0)
+                        {
+                            selectedIndex = 0;
+                            scrollPosition.y = 0;
+                            break;
+                        }
+
+                        selectedIndex--;
+                        ScrollIfNeeded(ScrollDirection.Up);
+                        break;
+                    case KeyCode.DownArrow:
+                        if (selectedIndex >= selectionRange)
+                        {
+                            selectedIndex = selectionRange;
+                            scrollPosition.y = availableHeight / renderedObjectsCount * selectedIndex;
+                            break;
+                        }
+
+                        selectedIndex++;
+                        ScrollIfNeeded(ScrollDirection.Down);
+
+                        break;
+                    case KeyCode.Return:
+                        Send(objects[selectedIndex]);
+                        break;
+                }
+
+                break;
+        }
+
+        Repaint();
+    }
+
+    private void ScrollIfNeeded(ScrollDirection direction)
+    {
+        float heightPerElement = availableHeight / renderedObjectsCount;
+
+        switch (direction)
+        {
+            case ScrollDirection.Up:
+                if (selectedIndex <= objects.Count - 1 - renderedObjectsCount)
+                {
+                    scrollPosition.y -= heightPerElement;
+                }
+                break;
+            case ScrollDirection.Down:
+                if (selectedIndex >= renderedObjectsCount)
+                {
+                    scrollPosition.y += heightPerElement;
+                }
+
+                break;
+        }
     }
 
     private void RenderObjectInformation()
@@ -97,8 +172,8 @@ public class ResourceAssetPickerEditorWindow : EditorWindow
         EditorGUIExtensions.Splitter(1f, EditorStyles.miniButton.padding, EditorStyles.miniButton.margin);
         EditorGUILayout.BeginHorizontal();
 
-        Texture2D previewTexture = AssetPreview.GetAssetPreview(objects[selectedObjectId]) ?? 
-            AssetPreview.GetMiniTypeThumbnail(objects[selectedObjectId].GetType());
+        Texture2D previewTexture = AssetPreview.GetAssetPreview(objects[selectedIndex]) ?? 
+            AssetPreview.GetMiniTypeThumbnail(objects[selectedIndex].GetType());
 
         Rect rect = GUILayoutUtility.GetRect(new GUIContent(previewTexture), previewBackgroundGuiStyle,
             GUILayout.Width(64), GUILayout.Height(64));
@@ -121,8 +196,8 @@ public class ResourceAssetPickerEditorWindow : EditorWindow
 
         EditorGUILayout.BeginVertical();
 
-        EditorGUILayout.LabelField(objects[selectedObjectId].name);
-        EditorGUILayout.LabelField(AssetDatabase.GetAssetPath(objects[selectedObjectId]));
+        EditorGUILayout.LabelField(objects[selectedIndex].name);
+        EditorGUILayout.LabelField(AssetDatabase.GetAssetPath(objects[selectedIndex]));
 
         EditorGUILayout.EndVertical();
         EditorGUILayout.EndHorizontal();
@@ -130,28 +205,32 @@ public class ResourceAssetPickerEditorWindow : EditorWindow
 
     private void RenderObjects()
     {
-        int heightOffset = HasValidSelection ? -100 : 0;
+        renderedObjectsCount = 0;
+        availableHeight = 0;
 
+        heightOffset = HasValidSelection ? -100 : 0;
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, 
             GUIStyle.none, GUILayout.Width(position.width), GUILayout.Height(position.height + heightOffset));
 
         EditorGUILayout.BeginVertical();
 
-        RenderObject("None", null);
-        if (string.IsNullOrEmpty(searchString))
+        List<Object> displayObjects = string.IsNullOrEmpty(searchString) ? objects : 
+            objects.Where(obj => obj == null || obj.name.ToLower().StartsWith(searchString)).ToList();
+
+        if (lastSearchString != searchString)
         {
-            foreach (KeyValuePair<int, Object> pair in objects)
+            Object obj = objects[selectedIndex];
+            if (displayObjects.Contains(obj))
             {
-                RenderObject(pair.Value);
+                selectedIndex = displayObjects.IndexOf(obj);
             }
         }
-        else
+
+        selectionRange = displayObjects.Count - 1;
+
+        foreach (Object obj in displayObjects)
         {
-            foreach (KeyValuePair<int, Object> obj in
-                objects.Where(pair => pair.Value.name.StartsWith(searchString)))
-            {
-                RenderObject(obj.Value);
-            }
+            RenderObject(obj);
         }
      
         EditorGUILayout.EndVertical();
@@ -160,53 +239,74 @@ public class ResourceAssetPickerEditorWindow : EditorWindow
 
     private void RenderObject(Object value)
     {
-        RenderObject(value.name, value);
+        if (value == null)
+        {
+            RenderObject("None", null);
+        }
+        else
+        {
+            RenderObject(value.name, value);
+        }
     }
 
     private void RenderObject(string text, Object value)
     {
         GUIStyle active = regularLabelGuiStyle;
-        int instanceId = value == null ? NullObjectId : value.GetInstanceID();
+        int index = objects.IndexOf(value);
 
-        if (selectedObjectId == instanceId)
+        if (selectedIndex == index)
         {
             active = selectedLabelGuiStyle;
         }
 
-        if (!GUILayout.Button(text, active)) return;
-        if (selectedObjectId != instanceId & clicks > 0)
+        Rect buttonRect = GUILayoutUtility.GetRect(new GUIContent(text), active);
+        if (availableHeight <= position.height - (Mathf.Abs(heightOffset) + searchBarHeight))
+        {
+            availableHeight += buttonRect.height;
+            renderedObjectsCount++;
+        }
+
+        GUI.SetNextControlName($"ObjectButton{index}");
+        if (!GUI.Button(buttonRect, text, active)) return;
+        if (selectedIndex != index & clicks > 0)
         {
             clicks = 0;
         }
 
         clicks++;
-        selectedObjectId = instanceId;
+        selectedIndex = objects.IndexOf(value);
+        Repaint();
 
         double delta = EditorApplication.timeSinceStartup - lastDoubleClickTime;
         if (delta < doubleClickTimeWindow && clicks >= 2)
         {
             clicks = 0;
-            OnAssetPicked(value);
-            selectedObjectId = NothingSelectedId;
-            Close();
+            Send(value);
         }
 
         lastDoubleClickTime = EditorApplication.timeSinceStartup;
     }
 
+    private void Send(Object value)
+    {
+        OnAssetPicked(value);
+        Close();
+    }
+
     public void Select(Object selected)
     {
-        selectedObjectId = selected == null ? NullObjectId : selected.GetInstanceID();
+        selectedIndex = objects.IndexOf(selected);
     }
 
     public void GetFiles(string folderPath, Type objectType)
     {
-        objects = new Dictionary<int, Object>();
+        objects = new List<Object>();
         Object[] assets = Resources.LoadAll(folderPath, objectType);
 
+        objects.Add(null);
         foreach (Object asset in assets)
         {
-            objects.Add(asset.GetInstanceID(), asset);
+            objects.Add(asset);
         }
     }
 }

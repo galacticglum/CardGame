@@ -26,7 +26,6 @@ public class CardSpecificEditor : IEntityEditor
         card.Name = EditorGUILayout.TextField("Name", card.Name).Trim();
 
         spritePickerControl.OnGUI();
-        sprite = (Sprite)EditorGUILayout.ObjectField(new GUIContent("test"), sprite, typeof(Sprite), true);
 
         EditorGUILayout.Space();
         card.SpriteName = EditorGUILayout.TextField("Sprite Name", card.SpriteName);
