@@ -1,6 +1,6 @@
-﻿public interface IEntityEditor
+﻿public interface IContentEditor
 {
-    string EntityName { get; }
+    string ContentName { get; }
 
     void Draw();
     void ClearValues();

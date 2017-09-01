@@ -1,9 +1,9 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-public class CardSpecificEditor : IEntityEditor
+public class CardContentEditor : IContentEditor
 {
-    public string EntityName => card?.Name;
+    public string ContentName => card?.Name;
 
     private readonly ResourceAssetPickerControl<Sprite> spritePickerControl;
     private Card card;
@@ -11,7 +11,7 @@ public class CardSpecificEditor : IEntityEditor
 
     private readonly EditorWindow window;
 
-    public CardSpecificEditor(EditorWindow window)
+    public CardContentEditor(EditorWindow window)
     {
         this.window = window;
 

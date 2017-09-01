@@ -2,32 +2,32 @@
 using UnityEditor;
 using UnityEngine;
 
-public class EntityCreatorEditorWindow : EditorWindow
+public class GameContentEditorWindow : EditorWindow
 {
     private bool isEditing;
     private bool isEnemy;
     private string loadedFilePath;
 
-    private EnemySpecificEditor enemySpecificEditor;
-    private CardSpecificEditor cardSpecificEditor;
-    private IEntityEditor activeEditor;
+    private EnemyContentEditor enemyContentEditor;
+    private CardContentEditor cardContentEditor;
+    private IContentEditor activeEditor;
 
-    [MenuItem("Window/Entity Creator")]
+    [MenuItem("Window/Content Creator")]
     public static void Init()
     {
-        EntityCreatorEditorWindow window = (EntityCreatorEditorWindow)GetWindow(typeof(EntityCreatorEditorWindow));
-        window.titleContent = new GUIContent("Entity Creator");
+        GameContentEditorWindow window = (GameContentEditorWindow)GetWindow(typeof(GameContentEditorWindow));
+        window.titleContent = new GUIContent("Content Creator");
         window.Focus();
     }
 
-    [MenuItem("Assets/Open in Entity Editor")]
+    [MenuItem("Assets/Open in Content Editor")]
     public static void OpenInEditor()
     {
         string filePath = AssetDatabase.GetAssetPath(Selection.activeObject);
         string extension = Path.GetExtension(filePath);
 
         Init();
-        EntityCreatorEditorWindow window = (EntityCreatorEditorWindow)GetWindow(typeof(EntityCreatorEditorWindow));
+        GameContentEditorWindow window = (GameContentEditorWindow)GetWindow(typeof(GameContentEditorWindow));
         switch (extension)
         {
             case ".enemy":
@@ -39,7 +39,7 @@ public class EntityCreatorEditorWindow : EditorWindow
         }
     }
 
-    [MenuItem("Assets/Open in Entity Editor", true)]
+    [MenuItem("Assets/Open in Content Editor", true)]
     public static bool OpenInEditorValidation()
     {
         string extension = Path.GetExtension(AssetDatabase.GetAssetPath(Selection.activeObject));
@@ -48,8 +48,8 @@ public class EntityCreatorEditorWindow : EditorWindow
 
     private void OnEnable()
     {
-        enemySpecificEditor = new EnemySpecificEditor();
-        cardSpecificEditor = new CardSpecificEditor(this);
+        enemyContentEditor = new EnemyContentEditor();
+        cardContentEditor = new CardContentEditor(this);
     }
 
     private void OnGUI()
@@ -71,7 +71,7 @@ public class EntityCreatorEditorWindow : EditorWindow
             GUIUtility.ExitGUI();
         }
 
-        if (string.IsNullOrEmpty(activeEditor?.EntityName))
+        if (string.IsNullOrEmpty(activeEditor?.ContentName))
         {
             GUI.enabled = false;
         }
@@ -91,7 +91,7 @@ public class EntityCreatorEditorWindow : EditorWindow
                     Directory.CreateDirectory(savePath);
                 }
 
-                filePath = EditorUtility.SaveFilePanel($"Save {extension} asset file", savePath, activeEditor?.EntityName, extension);
+                filePath = EditorUtility.SaveFilePanel($"Save {extension} asset file", savePath, activeEditor?.ContentName, extension);
                 loadedFilePath = filePath;
             }
 
@@ -131,7 +131,7 @@ public class EntityCreatorEditorWindow : EditorWindow
 
         if (!isEditing)
         {
-            EditorGUILayout.HelpBox("To begin editing an entity, open or create a new entity.", MessageType.Info);
+            EditorGUILayout.HelpBox("To begin editing, open or create a new asset file.", MessageType.Info);
             return;
         }
 
@@ -143,8 +143,8 @@ public class EntityCreatorEditorWindow : EditorWindow
 
     private void ClearValues(bool edit = true)
     {
-        cardSpecificEditor.ClearValues();
-        enemySpecificEditor.ClearValues();
+        cardContentEditor.ClearValues();
+        enemyContentEditor.ClearValues();
 
         loadedFilePath = string.Empty;
         isEnemy = false;
@@ -156,7 +156,7 @@ public class EntityCreatorEditorWindow : EditorWindow
         ClearValues();
         isEnemy = false;
 
-        activeEditor = cardSpecificEditor;
+        activeEditor = cardContentEditor;
     }
 
     private void NewEnemy()
@@ -164,24 +164,24 @@ public class EntityCreatorEditorWindow : EditorWindow
         ClearValues();
         isEnemy = true;
 
-        activeEditor = enemySpecificEditor;
+        activeEditor = enemyContentEditor;
     }
 
     private void LoadCard(string filePath = null)
     {
         ClearValues();
-        activeEditor = cardSpecificEditor;
+        activeEditor = cardContentEditor;
         isEnemy = false;
 
-        loadedFilePath = cardSpecificEditor.Load(filePath);
+        loadedFilePath = cardContentEditor.Load(filePath);
     }
 
     private void LoadEnemy(string filePath = null)
     {
         ClearValues();
-        activeEditor = enemySpecificEditor;
+        activeEditor = enemyContentEditor;
         isEnemy = true;
 
-        loadedFilePath = enemySpecificEditor.Load(filePath);
+        loadedFilePath = enemyContentEditor.Load(filePath);
     }
 }

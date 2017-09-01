@@ -1,9 +1,9 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-public class EnemySpecificEditor : IEntityEditor
+public class EnemyContentEditor : IContentEditor
 {
-    public string EntityName => entityName;
+    public string ContentName => entityName;
 
     private string entityName;
     private string cardSpriteName;
@@ -14,7 +14,7 @@ public class EnemySpecificEditor : IEntityEditor
     private Vector2 descriptionScrollPosition;
     private string previousEntityName;
 
-    public EnemySpecificEditor()
+    public EnemyContentEditor()
     {
         ClearValues();
     }
