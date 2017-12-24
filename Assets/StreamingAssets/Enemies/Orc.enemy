@@ -1,0 +1,10 @@
+{
+  "name": "Orc",
+  "sprite_path": "",
+  "description": "Orc",
+  "attack_points": 1,
+  "health_points": 2,
+  "background_colour": {
+    "html_colour": "FFFFFFFF"
+  }
+}

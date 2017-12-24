@@ -17,7 +17,7 @@ public class CardController : MonoBehaviour
     private void Start()
     {
         cardGameObjects = new List<GameObject>();
-        startPosition = new Vector3(0, -Camera.main.orthographicSize + 1.25f, 0);
+        startPosition = new Vector3(0, -Camera.main.orthographicSize + 1f, 0);
     }
 
     public void AddCard(Card card)
@@ -59,13 +59,13 @@ public class CardController : MonoBehaviour
 
         for (int i = 0; i < cardGameObjects.Count; i++)
         {
-            cardGameObjects[i].GetComponent<CardDisplay>().SetupOrdering(i + 1);
-
             float zRotation = -(turnOffset + i * rotationPerCard - rotationOffset);
 
             cardGameObjects[i].transform.position = startPosition + new Vector3(i * gapBetweenCards - offset, -(Mathf.Abs(zRotation) * 0.01f), 0);
             cardGameObjects[i].transform.rotation = Quaternion.Euler(0, 0, zRotation);
         }
+
+        UpdateSortOrders();
     }
 
     public void UpdateSortOrders()

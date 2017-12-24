@@ -7,6 +7,7 @@ public class GameContentEditorWindow : EditorWindow
     private bool isEditing;
     private bool isEnemy;
     private string loadedFilePath;
+    private int selected;
 
     private EnemyContentEditor enemyContentEditor;
     private CardContentEditor cardContentEditor;
@@ -33,7 +34,7 @@ public class GameContentEditorWindow : EditorWindow
             case ".enemy":
                 window.LoadEnemy(filePath);
                 break;
-            case ".card":
+            case ".Card":
                 window.LoadCard(filePath);
                 break;
         }
@@ -43,12 +44,12 @@ public class GameContentEditorWindow : EditorWindow
     public static bool OpenInEditorValidation()
     {
         string extension = Path.GetExtension(AssetDatabase.GetAssetPath(Selection.activeObject));
-        return extension == ".enemy" || extension == ".card";
+        return extension == ".enemy" || extension == ".Card";
     }
 
     private void OnEnable()
     {
-        enemyContentEditor = new EnemyContentEditor();
+        enemyContentEditor = new EnemyContentEditor(this);
         cardContentEditor = new CardContentEditor(this);
     }
 
@@ -75,7 +76,7 @@ public class GameContentEditorWindow : EditorWindow
         {
             GUI.enabled = false;
         }
-        
+
         GUI.SetNextControlName("SaveButton");
         if (GUILayout.Button("Save", EditorStyles.miniButton, GUILayout.Width(50)))
         {
@@ -84,7 +85,7 @@ public class GameContentEditorWindow : EditorWindow
             string filePath = loadedFilePath;
             if (string.IsNullOrEmpty(filePath))
             {
-                string extension = isEnemy ? "enemy" : "card";
+                string extension = isEnemy ? "enemy" : "Card";
                 string savePath = isEnemy ? Enemy.AssetFilePath : Card.AssetFilePath;
                 if (!Directory.Exists(savePath))
                 {

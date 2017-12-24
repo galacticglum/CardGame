@@ -76,5 +76,71 @@ public static class EditorGUIExtensions
         GUI.TextField(new Rect(-100, -100, 1, 1), "");
         GUI.FocusControl(FocusOutUid);
     }
+
+    /// <summary>
+    /// Creates tabs from buttons, with their bottom edge removed by the magic of Haxx
+    /// </summary>
+    /// <remarks> 
+    /// The line will be misplaced if other elements is drawn before this
+    /// </remarks> 
+    /// <returns>Selected tab</returns>
+    public static int Tabs(string[] options, int selected)
+    {
+        const float activeColour = 0.9f;
+        const float StartSpace = 10;
+
+        GUILayout.Space(StartSpace);
+
+        Color oldBackgroundColour = GUI.backgroundColor;
+        Color highlightCol = new Color(activeColour, activeColour, activeColour);
+        Color transparentColour = new Color(0, 0, 0, 0);
+
+        GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
+        {
+            padding = {bottom = 8},
+            margin = {bottom = 0},
+            border = {bottom = 0}
+        };
+
+        GUILayout.BeginHorizontal();
+        {  
+            for (int i = 0; i < options.Length; ++i)
+            {
+                GUI.backgroundColor = i == selected ? highlightCol : transparentColour;
+                if (GUILayout.Button(options[i], buttonStyle))
+                {
+                    selected = i; 
+                }
+            }
+        }
+
+        GUILayout.EndHorizontal();
+
+        GUI.backgroundColor = oldBackgroundColour;
+        Texture2D texture = new Texture2D(1, 1);
+        texture.SetPixel(0, 0, highlightCol);
+        texture.Apply();
+
+        Splitter(1f, new RectOffset(0, 0, 0, 7), new RectOffset(0, 0, 0, 0));
+
+        return selected;
+    }
+
+    public static int Toolbar(int selected, params string[] options)
+    {
+        EditorGUILayout.BeginHorizontal();
+
+        for (int i = 0; i < options.Length; i++)
+        {
+            if (GUILayout.Toggle(i == selected, options[i], EditorStyles.toolbarButton) != (i == selected))
+            {
+                selected = i;
+            }
+        }
+
+        EditorGUILayout.EndHorizontal();
+
+        return selected;
+    }
 }
 

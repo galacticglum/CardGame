@@ -7,4 +7,5 @@ public class Encounter
 
     [JsonProperty(EnemiesJson, Required = Required.Always)]
     public List<Enemy> Enemies { get; set; }
+    public EncounterAttackPattern AttackPattern { get; set; }
 }

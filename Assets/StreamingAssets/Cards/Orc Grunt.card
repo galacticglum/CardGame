@@ -1,10 +1,10 @@
 {
   "name": "Orc Grunt",
-  "sprite_path": "Sprites\\Cards\\orc_image",
+  "sprite_path": "",
   "description": "Stuns enemy for 1 turn!",
   "attack_points": 2,
   "health_cost": 0,
-  "is_immediate": true,
+  "is_immediate": false,
   "background_colour": {
     "html_colour": "689AABFF"
   }

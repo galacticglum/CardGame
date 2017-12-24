@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class CardDisplay : MonoBehaviour
 {
+    public Card Card { get; private set; } 
     public GameObject GraphicsRootGameObject { get; private set; }
+
     private const string ResourcePath = "Prefabs/Card_Template";
 
     [Header("Components")]
@@ -26,25 +28,19 @@ public class CardDisplay : MonoBehaviour
     [SerializeField]
     private SpriteRenderer quickActionIcon;
 
-    private Card card; 
-
     private void Initialize()
     {
         GraphicsRootGameObject = cardFrame.gameObject;
-        image.sprite = card.Sprite;
-        nameLabel.text = card.Name;
-        descriptionLabel.text = card.Description;
-        attackPointLabel.text = card.AttackPoints.ToString();
-        background.color = card.BackgroundColour;
+        image.sprite = Card.Sprite;
+        nameLabel.text = Card.Name;
+        descriptionLabel.text = Card.Description;
+        attackPointLabel.text = Card.AttackPoints.ToString();
+        background.color = Card.BackgroundColour;
 
-        if (card.IsImmediate)
-        {
-            quickActionIcon.gameObject.SetActive(true);
-        }
-
-        card.AttackPointsChanged += (sender, args) => attackPointLabel.text = card.AttackPoints.ToString();
-        card.HealthCostChanged += OnHealthCostChanged;
-        OnHealthCostChanged(this, new HealthCostChangedEventArgs(card.HealthCost, card.HealthCost));
+        quickActionIcon.gameObject.SetActive(Card.IsImmediate);
+        Card.AttackPointsChanged += (sender, args) => attackPointLabel.text = Card.AttackPoints.ToString();
+        Card.HealthCostChanged += OnHealthCostChanged;
+        OnHealthCostChanged(this, new HealthCostChangedEventArgs(Card.HealthCost, Card.HealthCost));
 
         SetupOrdering();
     }
@@ -98,7 +94,7 @@ public class CardDisplay : MonoBehaviour
         GameObject cardGameObject = Instantiate(Resources.Load<GameObject>(ResourcePath));
         CardDisplay cardDisplay = cardGameObject.GetComponent<CardDisplay>();
 
-        cardDisplay.card = card;
+        cardDisplay.Card = card;
         cardDisplay.Initialize();
 
         return cardGameObject;

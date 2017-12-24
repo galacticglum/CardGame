@@ -16,19 +16,6 @@ public class AttackPointsChangedEventArgs : EventArgs
     }
 }
 
-public delegate void HealthPointsChangedEventHandler(object sender, HealthPointsChangedEventArgs args);
-public class HealthPointsChangedEventArgs : EventArgs
-{
-    public int OldHealthPoints { get; }
-    public int NewHealthPoints { get; }
-
-    public HealthPointsChangedEventArgs(int oldHealthPoints, int newHealthPoints)
-    {
-        OldHealthPoints = oldHealthPoints;
-        NewHealthPoints = newHealthPoints;
-    }
-}
-
 public delegate void HealthCostChangedEventHandler(object sender, HealthCostChangedEventArgs args);
 public class HealthCostChangedEventArgs : EventArgs
 {
@@ -49,7 +36,6 @@ public class Card : IContent<Card>
     public const string NamePropertyJson = "name";
     public const string SpritePathPropertyJson = "sprite_path";
     public const string DescriptionPropertyJson = "description";
-    public const string SpriteContentAssetPath = "Sprites/Cards";
     public const string AttackPointsPropertyJson = "attack_points";
     public const string HealthCostPropertyJson = "health_cost";
     public const string IsImmediatePropertyJson = "is_immediate";

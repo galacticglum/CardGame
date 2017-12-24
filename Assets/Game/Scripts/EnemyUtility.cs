@@ -17,7 +17,7 @@ public static class EnemyUtility
             writer.WritePropertyName(Enemy.NamePropertyJson);
             writer.WriteValue(name);
 
-            writer.WritePropertyName(Enemy.SpriteNamePropertyJson);
+            writer.WritePropertyName(Enemy.SpritePathPropertyJson);
             writer.WriteValue(spriteName);
 
             writer.WritePropertyName(Enemy.DescriptionPropertyJson);
@@ -47,7 +47,7 @@ public static class EnemyUtility
 
         Enemy card = JsonConvert.DeserializeObject<Enemy>(File.ReadAllText(filePath));
         name = card.Name;
-        spriteName = card.SpriteName;
+        spriteName = card.SpritePath;
         description = card.Description;
         attackPoints = card.AttackPoints;
         healthPoints = card.HealthPoints;

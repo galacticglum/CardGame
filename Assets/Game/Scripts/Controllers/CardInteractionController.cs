@@ -41,13 +41,21 @@ public class CardInteractionController : MonoBehaviour
             else
             {
                 StopHover(currentHoverCardDisplay);
-            }     
+            }
         }
         else
         {
             currentDragCardDisplay.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + new Vector3(0, 0, Camera.main.orthographicSize * 2f);
 
-            if (Input.GetMouseButtonUp(0))
+            if (!Input.GetMouseButtonUp(0)) return;
+
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (hit.collider?.gameObject.tag == "Enemy")
+            {
+                GameController.Instance.AttackEnemy(hit.collider.GetComponent<EnemyDisplay>().Enemy, currentDragCardDisplay.Card);
+                StopDrag();
+            }
+            else
             {
                 StopDrag(currentDragCardDisplay);
             }
@@ -57,7 +65,7 @@ public class CardInteractionController : MonoBehaviour
     public void BeginDrag(CardDisplay cardDisplay)
     {
         currentDragCardDisplay = cardDisplay;
-        cardDisplay.SetupOrdering(CardController.Instance.Count + 1);
+        currentDragCardDisplay.SetupOrdering(CardController.Instance.Count + 1);
 
         dragCardIndex = CardController.Instance.RemoveCard(cardDisplay.gameObject);
         cardDisplay.transform.rotation = Quaternion.identity;
@@ -73,6 +81,15 @@ public class CardInteractionController : MonoBehaviour
         currentDragCardDisplay = null;
     }
 
+    public void StopDrag()
+    {
+        if (currentDragCardDisplay == null) return;
+
+        Destroy(currentDragCardDisplay.gameObject);
+        currentDragCardDisplay = null;
+    }
+
+
     private void BeginHover(CardDisplay cardDisplay)
     {
         if (cardDisplay == null || currentHoverCardDisplay != null || currentDragCardDisplay != null) return;
@@ -86,7 +103,9 @@ public class CardInteractionController : MonoBehaviour
         originalPosition = cardDisplay.GraphicsRootGameObject.transform.position;
 
         cardDisplay.GraphicsRootGameObject.transform.rotation = Quaternion.identity;
-        cardDisplay.GraphicsRootGameObject.transform.position = cardDisplay.transform.position + new Vector3(0, 1.5f, 0);
+        Vector3 position = cardDisplay.transform.position + new Vector3(0, 1.5f, 0);
+        position.z = originalPosition.z;
+        cardDisplay.GraphicsRootGameObject.transform.position = position;
 
         cardDisplay.SetupOrdering(CardController.Instance.Count + 1);
         cardDisplay.GraphicsRootGameObject.transform.localScale = new Vector3(zoomMultiplierX * regularScale.x, zoomMultiplierY * regularScale.y, 1);

@@ -9,12 +9,8 @@ public class CardContentEditor : IContentEditor
     private Card card;
     private Vector2 descriptionScrollPosition;
 
-    private readonly EditorWindow window;
-
     public CardContentEditor(EditorWindow window)
     {
-        this.window = window;
-
         spritePickerControl = new ResourceAssetPickerControl<Sprite>(window, "Sprite");
         ClearValues();
     }
@@ -55,11 +51,11 @@ public class CardContentEditor : IContentEditor
 
         if (string.IsNullOrEmpty(filePath))
         {
-            filePath = EditorUtility.OpenFilePanel("Open card asset file", Card.AssetFilePath, "card");
+            filePath = EditorUtility.OpenFilePanel("Open Card asset file", Card.AssetFilePath, "Card");
         }
 
         ContentUtility.LoadFromFile(filePath, out card);
-        spritePickerControl.SetValue(card.SpritePath);
+        spritePickerControl?.SetValue(card?.SpritePath);
 
         return filePath;
     }

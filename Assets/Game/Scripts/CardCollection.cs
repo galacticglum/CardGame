@@ -18,6 +18,8 @@ public class CardCollectionEventArgs : EventArgs
 
 public class CardCollection : IEnumerable<Card>
 {
+    public int Count => Cards.Count;
+
     public event CardAddedEventHandler Added;
     public event CardRemovedEventHandler Removed;
 
@@ -30,14 +32,15 @@ public class CardCollection : IEnumerable<Card>
 
     public virtual void Add(Card card)
     {
-        Added?.Invoke(this, new CardCollectionEventArgs(this, card));
         Cards.Add(card);
+        Added?.Invoke(this, new CardCollectionEventArgs(this, card));
     }
 
     public virtual bool Remove(Card card)
     {
+        bool result =  Cards.Remove(card);
         Removed?.Invoke(this, new CardCollectionEventArgs(this, card));
-        return Cards.Remove(card);
+        return result;
     }
 
     public virtual Card Pop()

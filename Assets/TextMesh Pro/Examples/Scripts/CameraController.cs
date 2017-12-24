@@ -65,7 +65,7 @@ namespace TMPro.Examples
         }
 
 
-        // Use this for initialization
+        // AttackEnemy this for initialization
         private void Start()
         {
             if (CameraTarget == null)

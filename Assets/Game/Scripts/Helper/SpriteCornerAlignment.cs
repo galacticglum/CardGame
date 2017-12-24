@@ -16,6 +16,11 @@ public class SpriteCornerAlignment : MonoBehaviour
     private void Update()
     {
         if (Camera.main.aspect == lastHandledAspect) return;
+        Reposition();
+    }
+
+    public void Reposition()
+    {
         lastHandledAspect = Camera.main.aspect;
 
         float orthographicWidth = Camera.main.orthographicSize * lastHandledAspect;
@@ -33,10 +38,10 @@ public class SpriteCornerAlignment : MonoBehaviour
                 position = new Vector3(-orthographicWidth - xOffset, Camera.main.orthographicSize + yOffset, 0) + (Vector3)offset;
                 break;
             case Corner.TopRight:
-                xOffset = halfWidthInUnits * size.x - halfWidthInUnits;
+                xOffset = halfWidthInUnits * size.x - halfWidthInUnits * 2;
                 yOffset = targetSprite.texture.height / targetSprite.pixelsPerUnit / 2 * size.y;
 
-                position = new Vector3(-orthographicWidth + xOffset, -Camera.main.orthographicSize + yOffset, 0) + (Vector3)offset;
+                position = new Vector3(orthographicWidth + xOffset, -Camera.main.orthographicSize + yOffset, 0) + (Vector3)offset;
                 break;
             case Corner.BottomLeft:
                 xOffset = halfWidthInUnits * size.x - halfWidthInUnits;
@@ -45,10 +50,10 @@ public class SpriteCornerAlignment : MonoBehaviour
                 position = new Vector3(-orthographicWidth - xOffset, -Camera.main.orthographicSize + yOffset, 0) + (Vector3)offset;
                 break;
             case Corner.BottomRight:
-                xOffset = halfWidthInUnits * size.x - halfWidthInUnits;
+                xOffset = halfWidthInUnits * size.x - halfWidthInUnits * 2;
                 yOffset = targetSprite.texture.height / targetSprite.pixelsPerUnit / 2 * size.y;
-            
-                position = new Vector3(-orthographicWidth + xOffset, -Camera.main.orthographicSize + yOffset, 0) + (Vector3)offset;
+
+                position = new Vector3(orthographicWidth + xOffset, -Camera.main.orthographicSize + yOffset, 0) + (Vector3)offset;
                 break;
         }
 

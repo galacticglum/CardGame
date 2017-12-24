@@ -19,7 +19,7 @@ public class CardManager : IEnumerable<Card>
 
     private void Load()
     {
-        FileInfo[] files = new DirectoryInfo(Card.AssetFilePath).GetFiles("*.card", SearchOption.TopDirectoryOnly);
+        FileInfo[] files = new DirectoryInfo(Card.AssetFilePath).GetFiles("*.Card", SearchOption.TopDirectoryOnly);
         foreach (FileInfo file in files)
         {
             Card card;

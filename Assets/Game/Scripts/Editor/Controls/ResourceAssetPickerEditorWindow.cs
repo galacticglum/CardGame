@@ -43,7 +43,7 @@ public class ResourceAssetPickerEditorWindow : EditorWindow
     private float availableHeight;
     private float searchBarHeight;
     private int renderedObjectsCount;
-    private int heightOffset;
+    private int informationPanelHeight;
 
     private string lastSearchString;
     private int selectionRange;
@@ -175,9 +175,12 @@ public class ResourceAssetPickerEditorWindow : EditorWindow
         Texture2D previewTexture = AssetPreview.GetAssetPreview(objects[selectedIndex]) ?? 
             AssetPreview.GetMiniTypeThumbnail(objects[selectedIndex].GetType());
 
-        Rect rect = GUILayoutUtility.GetRect(new GUIContent(previewTexture), previewBackgroundGuiStyle,
-            GUILayout.Width(64), GUILayout.Height(64));
+        GUILayoutOption[] options =
+        {
+            GUILayout.Width(64), GUILayout.Height(64)
+        };
 
+        Rect rect = GUILayoutUtility.GetRect(new GUIContent(previewTexture), previewBackgroundGuiStyle, options);
         GUI.Box(rect, GUIContent.none, previewBackgroundGuiStyle);
 
         const float percent = 0.95f;
@@ -208,9 +211,9 @@ public class ResourceAssetPickerEditorWindow : EditorWindow
         renderedObjectsCount = 0;
         availableHeight = 0;
 
-        heightOffset = HasValidSelection ? -100 : 0;
+        informationPanelHeight = HasValidSelection ? -100 : 0;
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, 
-            GUIStyle.none, GUILayout.Width(position.width), GUILayout.Height(position.height + heightOffset));
+            GUIStyle.none, GUILayout.Width(position.width), GUILayout.Height(position.height + informationPanelHeight));
 
         EditorGUILayout.BeginVertical();
 
@@ -260,7 +263,7 @@ public class ResourceAssetPickerEditorWindow : EditorWindow
         }
 
         Rect buttonRect = GUILayoutUtility.GetRect(new GUIContent(text), active);
-        if (availableHeight <= position.height - (Mathf.Abs(heightOffset) + searchBarHeight))
+        if (availableHeight <= position.height - (Mathf.Abs(informationPanelHeight) + searchBarHeight))
         {
             availableHeight += buttonRect.height;
             renderedObjectsCount++;

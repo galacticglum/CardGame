@@ -3,56 +3,46 @@ using UnityEngine;
 
 public class EnemyContentEditor : IContentEditor
 {
-    public string ContentName => entityName;
+    public string ContentName => enemy?.Name;
 
-    private string entityName;
-    private string cardSpriteName;
-    private string description;
-    private int attackPoints;
-    private int healthPoints;
-
+    private readonly ResourceAssetPickerControl<Sprite> spritePickerControl;
+    private Enemy enemy;
     private Vector2 descriptionScrollPosition;
-    private string previousEntityName;
 
-    public EnemyContentEditor()
+    public EnemyContentEditor(EditorWindow window)
     {
+        spritePickerControl = new ResourceAssetPickerControl<Sprite>(window, "Sprite");
         ClearValues();
     }
 
     public void Draw()
     {
-        GUI.SetNextControlName("NameTextFieldEnemy");
-        previousEntityName = entityName;
-        entityName = EditorGUILayout.TextField("Name", entityName).Trim();
+        if (enemy == null) return;
 
-        if (GUI.GetNameOfFocusedControl() == "NameTextField" && previousEntityName != entityName)
-        {
-            cardSpriteName = entityName;
-        }
+        enemy.Name = EditorGUILayout.TextField("Name", enemy.Name).Trim();
+        enemy.SpritePath = spritePickerControl.OnGUI().FilePath;
 
-        cardSpriteName = EditorGUILayout.TextField("Sprite Name", cardSpriteName);
+        EditorGUILayout.Space();
+        enemy.BackgroundColour = EditorGUILayout.ColorField("Background Colour", enemy.BackgroundColour);
 
         EditorGUILayout.LabelField("Description");
         descriptionScrollPosition = EditorGUILayout.BeginScrollView(descriptionScrollPosition, GUILayout.Height(75));
-        description = EditorGUILayout.TextArea(description, GUILayout.ExpandHeight(true)).Trim();
+        enemy.Description = EditorGUILayout.TextArea(enemy.Description, GUILayout.ExpandHeight(true)).Trim();
         EditorGUILayout.EndScrollView();
 
-        attackPoints = EditorGUILayout.IntField("Attack Points", attackPoints);
-        healthPoints = EditorGUILayout.IntField("Health Points", healthPoints);     
+        enemy.AttackPoints = EditorGUILayout.IntField("Attack Points", enemy.AttackPoints);
+        enemy.HealthPoints = EditorGUILayout.IntField("Health", enemy.HealthPoints);
     }
 
     public void ClearValues()
     {
-        entityName = string.Empty;
-        cardSpriteName = string.Empty;
-        description = string.Empty;
-        attackPoints = 0;
-        healthPoints = 0;
+        enemy = new Enemy();
+        spritePickerControl.ClearValue();
     }
 
     public void Save(string filePath)
     {
-        EnemyUtility.SaveToFile(filePath, entityName, cardSpriteName, description, attackPoints, healthPoints);
+        ContentUtility.SaveToFile(filePath, enemy);
     }
 
     public string Load(string filePath)
@@ -61,10 +51,12 @@ public class EnemyContentEditor : IContentEditor
 
         if (string.IsNullOrEmpty(filePath))
         {
-            filePath = EditorUtility.OpenFilePanel("Open enemy asset file", Enemy.AssetFilePath, "enemy");
+            filePath = EditorUtility.OpenFilePanel("Open Card asset file", Card.AssetFilePath, "Card");
         }
 
-        EnemyUtility.LoadFromFile(filePath, out entityName, out cardSpriteName, out description, out attackPoints, out healthPoints);
+        ContentUtility.LoadFromFile(filePath, out enemy);
+        spritePickerControl?.SetValue(enemy?.SpritePath);
+
         return filePath;
     }
 }
